@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/jsdom": "^16.2.13",
     "firebase": "^8.8.1",
     "firebase-admin": "^9.11.0",
     "jsdom": "^16.7.0",
@@ -17,11 +16,11 @@
     "nookies": "^2.5.2",
     "puppeteer": "^10.1.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "xml2js": "^0.4.23"
+    "react-dom": "17.0.2"
   },
   "devDependencies": {
     "@types/firebase": "^3.2.1",
+    "@types/jsdom": "^16.2.13",
     "@types/react": "17.0.15",
     "@types/xml2js": "^0.4.9",
     "autoprefixer": "^10.3.1",
