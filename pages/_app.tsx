@@ -4,7 +4,14 @@ import type { AppProps } from "next/app";
 // ! Assets
 import "../assets/styles/globals.css";
 
+// ! Library
+import LoaderProvider from "../lib/providers/loader";
+
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <LoaderProvider>
+      <Component {...pageProps} />
+    </LoaderProvider>
+  )
 }
 export default MyApp;

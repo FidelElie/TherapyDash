@@ -56,7 +56,7 @@ export default function TasksDashboard({ user }: { user: User }) {
   }, [tasksLoading]);
 
   return (
-    <AppLayout>
+    <AppLayout user>
       <div className="flex flex-col flex-grow py-10 items-center">
         <div className="flex items-center justify-center">
           <h1 className="text-6xl text-white tracking-tighter mb-10">

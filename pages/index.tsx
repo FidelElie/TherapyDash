@@ -5,6 +5,7 @@ import { ChangeEvent, useState } from "react";
 
 // ! Library
 import getServerAuth from "../lib/auth/server";
+import { useLoader } from "../lib/providers/loader";
 
 // ! Components
 import AppLayout from "../components/layouts/app";
@@ -12,6 +13,7 @@ import { SignInParams, signIn } from "../lib/auth/client";
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { openLoader, closeLoader } = useLoader();
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const modifyData = (key: string, value: string) => setFormData({
@@ -21,6 +23,7 @@ export default function LoginScreen() {
   });
 
   const handleLogin = async () => {
+    openLoader();
     const loginResponse = await signIn(formData as SignInParams);
 
     console.log(loginResponse);
@@ -28,10 +31,11 @@ export default function LoginScreen() {
     if (loginResponse.status == "success") {
       router.push("/dashboard");
     }
+    closeLoader();
   }
 
   return (
-    <AppLayout>
+    <AppLayout center>
       <div className="card w-1/3 px-5 py-8 ">
         <div className="mb-8 text-center">
           <span className="text-4xl text-secondary tracking-tighter">Log In To TherapyDash</span>

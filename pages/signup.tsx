@@ -5,6 +5,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 
 // ! Library
 import getServerAuth from "../lib/auth/server";
+import { useLoader } from "../lib/providers/loader";
 
 // ! Components
 import AppLayout from "../components/layouts/app";
@@ -12,6 +13,7 @@ import { signUp, SignUpParams } from "../lib/auth/client";
 
 export default function SignUpScreen() {
   const router = useRouter();
+  const { openLoader, closeLoader } = useLoader();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -33,11 +35,13 @@ export default function SignUpScreen() {
   })
 
   const handleSignUp = async () => {
+    openLoader();
     const signUpResponse = await signUp({...formData, ...{ fileData }} as SignUpParams);
 
     if (signUpResponse.status == "success") {
       router.push("/dashboard");
     }
+    closeLoader();
   }
 
   useEffect(() => {
@@ -62,7 +66,7 @@ export default function SignUpScreen() {
   }, [formData.password, formData.repeatPassword])
 
   return (
-    <AppLayout>
+    <AppLayout center>
       <div className="card w-1/3 px-5 py-8 ">
         <div className="mb-8 text-center">
           <h1 className="text-4xl text-secondary tracking-tighter">Sign Up To TherapyDash</h1>

@@ -7,11 +7,13 @@ import getServerAuth from "../../lib/auth/server";
 import { db, storage } from "../../config/firebase.client";
 import { User, Photo } from "../../lib/types";
 import { newId } from "../../lib/utils";
+import { useLoader } from "../../lib/providers/loader";
 
 // ! Components
 import AppLayout from "../../components/layouts/app";
 
 export default function PhotosDashboard({ user }: { user: User }) {
+  const { openLoader, closeLoader } = useLoader();
   const [fileData, setFileData] = useState<FileList | null>(null)
   const [photosLoading, setPhotosLoading] = useState(true)
   const [currentUserPhotos, setCurrentUserPhotos] = useState<Photo[]>([]);
@@ -32,6 +34,7 @@ export default function PhotosDashboard({ user }: { user: User }) {
   }
 
   const uploadPhotos = async () => {
+    openLoader();
     const photosRef = db().collection("photos");
     const batch = db().batch();
 
@@ -55,6 +58,7 @@ export default function PhotosDashboard({ user }: { user: User }) {
     await batch.commit();
     setFileData(null);
     setPhotosLoading(true);
+    closeLoader();
   }
 
   useEffect(() => {
@@ -68,7 +72,7 @@ export default function PhotosDashboard({ user }: { user: User }) {
   }, [photosLoading])
 
   return (
-    <AppLayout>
+    <AppLayout user>
       <div className="flex flex-col flex-grow py-10 items-center">
         <div className="flex items-center justify-center">
           <h1 className="text-6xl text-white tracking-tighter mb-10">

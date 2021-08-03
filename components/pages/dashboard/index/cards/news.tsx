@@ -40,8 +40,12 @@ const NewsCard = () => {
       {
         (newsData.length != 0 && !newsLoading) && (
           <div className="flex flex-col items-center justify-center">
-            <span className="mb-2 text-lg text-secondary">{ newsData[0].title }</span>
-            <span className="text-sm">{ newsData[0].description }</span>
+            <span className="mb-2 text-lg text-secondary text-center">
+              { newsData[0].title }
+            </span>
+            <span className="text-sm text-center">
+              { newsData[0].description }
+            </span>
           </div>
         )
       }

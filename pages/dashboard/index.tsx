@@ -13,7 +13,7 @@ import ClothesCard from "../../components/pages/dashboard/index/cards/clothes";
 
 export default function Dashboard({ user }: { user: User }) {
   return (
-    <AppLayout center>
+    <AppLayout center user>
       <div className="flex-grow flex flex-col py-10 items-center">
         <h1 className="text-6xl text-white tracking-tighter mb-10">
           Good Day { user.username }
