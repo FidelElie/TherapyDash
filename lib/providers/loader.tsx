@@ -22,7 +22,7 @@ const LoaderProvider = (props: { children: ReactNode }) => {
     }}>
       {
         loaderOpen && (
-          <div className="fixed w-screen h-screen flex items-center justify-center bg-black bg-opacity-50" style={{zIndex: 50}}>
+          <div className="fixed w-screen h-screen flex items-center justify-center bg-black bg-opacity-50 z-50">
             <span className="text-white text-xl">Loading... Please Wait</span>
           </div>
         )
