@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.card {
+  @apply bg-white rounded-md shadow-lg;
+}
+
+.input {
+  @apply bg-white shadow rounded-lg px-5 py-2;
+}
+
+.button {
+  @apply text-tertiary bg-primary px-3 py-2 rounded-md;
+}
+
+.button.alternate {
+  @apply text-white bg-tertiary
+}
+
+.button.link {
+  @apply text-white bg-secondary
+}
