@@ -2,11 +2,11 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 // ! Library
 import { JSDOM } from "jsdom";
-import puppeteer from 'puppeteer';
+import { chromium } from 'playwright';
 
 export default async (_: NextApiRequest, res: NextApiResponse) => {
   const url = "http://feeds.bbci.co.uk/news/rss.xml"
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true });
 
   try {
     const page = await browser.newPage();
