@@ -11,18 +11,32 @@ import { useLoader } from "../lib/providers/loader";
 import AppLayout from "../components/layouts/app";
 import { SignInParams, signIn } from "../lib/auth/client";
 
+const initialFormData = {
+  email: "",
+  password: ""
+}
+
+const initialFormErrors = {
+  "auth/wrong-password": false,
+  "auth/user-not-found": false
+}
+
 export default function LoginScreen() {
   const router = useRouter();
   const { openLoader, closeLoader } = useLoader();
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState(initialFormData);
+  const [formErrors, setFormErrors] = useState(initialFormErrors);
 
   const modifyData = (key: string, value: string) => setFormData({
-    ...formData, ...{
-      [key]: value
-    }
+    ...formData, ...{ [key]: value }
   });
+  const enableFormError = (key: string) => setFormErrors({
+    ...formErrors, ... { [key]: true}
+  });
+  const resetFormErrors = () => setFormErrors(initialFormErrors);
 
   const handleLogin = async () => {
+    resetFormErrors();
     openLoader();
     const loginResponse = await signIn(formData as SignInParams);
 
@@ -30,18 +44,48 @@ export default function LoginScreen() {
 
     if (loginResponse.status == "success") {
       router.push("/dashboard");
+    } else {
+      if (loginResponse.error in initialFormErrors) {
+        enableFormError(loginResponse.error)
+      }
     }
     closeLoader();
   }
 
   return (
     <AppLayout center>
-      <div className="card w-1/3 px-5 py-8 ">
-        <div className="mb-8 text-center">
-          <span className="text-4xl text-secondary tracking-tighter">Log In To TherapyDash</span>
+      <div className="card w-2/5 overflow-hidden">
+        <div className="text-center bg-secondary p-5 mb-5">
+          <span className="text-4xl text-white font-semibold tracking-tighter">Log In To TherapyDash</span>
         </div>
+        {
+          formErrors["auth/wrong-password"] && (
+            <div className="w-full text-center px-5">
+              <span className="text-tertiary mr-3">
+                Sorry, You Have Entered The Wrong Email/ Password
+              </span>
+              <span className="text-secondary cursor-pointer" onClick={resetFormErrors}>
+                Clear
+              </span>
+
+            </div>
+          )
+        }
+        {
+          formErrors["auth/user-not-found"] && (
+            <div className="w-full text-center px-5">
+              <span className="text-tertiary mr-3">
+                Sorry, We Couldn't Find Your Account, Join Below
+              </span>
+              <span className="text-secondary cursor-pointer" onClick={resetFormErrors}>
+                Clear
+              </span>
+
+            </div>
+          )
+        }
         <form
-          className="space-y-3 flex flex-col"
+          className="flex flex-col px-5 pb-10 pt-5"
           onSubmit={(event) => {
             event.preventDefault();
             handleLogin();
@@ -52,7 +96,7 @@ export default function LoginScreen() {
             id="email"
             name="email"
             placeholder="Email"
-            className="input"
+            className="input mb-5"
             type="email"
             value={formData.email}
             onChange={
@@ -66,7 +110,7 @@ export default function LoginScreen() {
             id="password"
             name="password"
             placeholder="Password"
-            className="input"
+            className="input mb-5"
             type="password"
             value={formData.password}
             onChange={
@@ -75,7 +119,7 @@ export default function LoginScreen() {
             }
             required
           />
-          <button className="button disabled:opacity-50" type="submit">Log In</button>
+          <button className="mb-3 button disabled:opacity-50" type="submit">Log In</button>
           <div className="text-tertiary flex justify-center">
             New To TherapyDash?
             <Link href="/signup">

@@ -7,12 +7,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const authInformation = req.body.userInformation;
 
     try {
-        const authResponse = await admin.auth().createUser(authInformation);
+        await admin.auth().createUser(authInformation);
 
-        return res.status(200).json({ user: authResponse })
+        return res.status(200).json({ status: "success", error: null })
     } catch (error) {
         console.log(`Error Signing Up User ${authInformation.displayName}`)
         console.log(error);
-        return res.status(500).json({ user: null })
+        return res.status(500).json({ status: "error", error: error.errorInfo })
     }
 }

@@ -32,7 +32,10 @@ export default function AppLayout(props: appLayoutProps) {
       <Head>
         <title>{ title ? title : "TherapyDash"}</title>
       </Head>
-      <img src="https://firebasestorage.googleapis.com/v0/b/therapydash---development.appspot.com/o/website%2Fbackground.png?alt=media&token=4d0496f3-1d67-48ff-b500-82e265aca5f0" className="absolute top-0 left-0 w-full z-0 h-full"/>
+      <div className="absolute top-0 left-0 w-full h-screen object-cover">
+        <img src="https://firebasestorage.googleapis.com/v0/b/therapydash---development.appspot.com/o/website%2Fbackground.jpg?alt=media&token=9555e39f-fa8f-41b2-9e20-35ad163526a0" className="w-full h-full"/>
+        <div className="absolute top-0 left-0 bg-black opacity-60 w-full h-screen"></div>
+      </div>
       {
         user &&
           <button className="button absolute top-5 right-5 z-10" onClick={handleSignOut}>

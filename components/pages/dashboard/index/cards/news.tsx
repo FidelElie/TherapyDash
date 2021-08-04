@@ -38,7 +38,7 @@ const NewsCard = () => {
           <span className="text-lg text-secondary">Fetching News Data</span>
       }
       {
-        (newsData.length != 0 && !newsLoading) && (
+        (newsData.length != 0 && !newsLoading) ? (
           <div className="flex flex-col items-center justify-center">
             <span className="mb-2 text-lg text-secondary text-center">
               { newsData[0].title }
@@ -46,6 +46,10 @@ const NewsCard = () => {
             <span className="text-sm text-center">
               { newsData[0].description }
             </span>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center">
+            <span className="text-tertiary">Sorry An Error Occurred When Trying To Fetch The News</span>
           </div>
         )
       }

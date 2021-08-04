@@ -4,6 +4,12 @@ import { useState, useEffect } from "react";
 // ! Components
 import DashboardCard from "../container";
 
+const conditionMap: { [key: string]: string } = {
+  clouds: "https://firebasestorage.googleapis.com/v0/b/therapydash---development.appspot.com/o/website%2Fclouds.png?alt=media&token=9f83816c-0949-4515-aa11-8699b190ae00",
+  rain: "https://firebasestorage.googleapis.com/v0/b/therapydash---development.appspot.com/o/website%2Frain.png?alt=media&token=3dfb996c-d290-4891-be61-0dc1d09b804f",
+  sun: "https://firebasestorage.googleapis.com/v0/b/therapydash---development.appspot.com/o/website%2Fsun.png?alt=media&token=9aec6e82-481c-45ad-b2a9-e5402ff77427"
+}
+
 const WeatherCard = () => {
   const [geolocationActive, setGeoLocationActive] = useState(true);
   const [weatherData, setWeatherData] = useState<any>(null);
@@ -66,7 +72,7 @@ const WeatherCard = () => {
               </span>
               <img
                 className="w-24 h-auto"
-                src={`./images/${(weatherData.weather[0].main).toLowerCase()}.png`}
+                src={conditionMap[(weatherData.weather[0].main).toLowerCase()]}
               />
             </>
           )

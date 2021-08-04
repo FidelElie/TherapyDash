@@ -39,7 +39,7 @@ const signUp = async ({ username, email, password, fileData}: SignUpParams) => {
     const userId = newId();
     const currentDate = new Date();
 
-    const adminCreationResponse =  await fetch("/api/signup", {
+    const adminCreationRequest =  await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -51,9 +51,10 @@ const signUp = async ({ username, email, password, fileData}: SignUpParams) => {
             }
         })
     });
+    const adminCreationResponse = await adminCreationRequest.json();
 
-    if (adminCreationResponse.status != 200) {
-        return { status: "success", error: "admin-error"};
+    if (adminCreationResponse.status == "error") {
+        return { status: "error", error: adminCreationResponse.error };
     }
 
     const storageRef = storage().ref();

@@ -11,7 +11,7 @@ type verifyAuthType = {
 }
 
 const verifyAuthDefaults = {
-    errorUrl: "/login",
+    errorUrl: "/",
     redirectOnSuccess: false,
     redirectOnError: true,
     successUrl: "/"
