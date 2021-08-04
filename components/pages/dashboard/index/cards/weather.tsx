@@ -71,8 +71,8 @@ const WeatherCard = () => {
                 {weatherData.main.temp} Degrees Celcius - {weatherData.weather[0].main}
               </span>
               <img
-                className="w-24 h-auto"
-                src={conditionMap[(weatherData.weather[0].main).toLowerCase()]}
+                className="w-12 h-auto"
+                src={conditionMap[("rain").toLowerCase()]}
               />
             </>
           )

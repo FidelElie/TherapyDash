@@ -36,27 +36,29 @@ const TasksCard = ({ user }: { user: User }) => {
 
   return (
     <DashboardCard title="Tasks" href="/dashboard/tasks">
-      {
-        tasksLoading &&
-        <div className="text-center w-full">
-          <span className="text-lg text-secondary">Fetching Tasks... Please Wait</span>
-        </div>
-      }
-      <div className="flex-grow flex flex-col w-full items-center">
+      <div className="flex flex-col items-center">
         {
-          (!tasksLoading) && (
-            currentUserTasks.length != 0 ?
-              currentUserTasks.map((task, index) =>
-                <TaskComponent
-                  task={task}
-                  index={index}
-                  setTasksLoading={setTasksLoading}
-                  key={task.id}
-                />)
-              :
-              <span className="text-white">No Tasks Have Been Added</span>
-          )
+          tasksLoading &&
+          <div className="text-center w-full">
+            <span className="text-lg text-secondary">Fetching Tasks... Please Wait</span>
+          </div>
         }
+        <div className="flex-grow flex flex-col w-full items-center">
+          {
+            (!tasksLoading) && (
+              currentUserTasks.length != 0 ?
+                currentUserTasks.map((task, index) =>
+                  <TaskComponent
+                    task={task}
+                    index={index}
+                    setTasksLoading={setTasksLoading}
+                    key={task.id}
+                  />)
+                :
+                <span className="text-white">No Tasks Have Been Added</span>
+            )
+          }
+        </div>
       </div>
     </DashboardCard>
   )

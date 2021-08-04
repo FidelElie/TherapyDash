@@ -25,10 +25,10 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
       }
     })
 
-    res.status(200).json({ results: rssJson });
+    res.status(200).json({ results: rssJson, error: false });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ results: [] });
+    res.status(500).json({ results: [], error: true });
   } finally {
     await browser.close();
   }

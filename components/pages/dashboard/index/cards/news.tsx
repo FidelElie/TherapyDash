@@ -13,6 +13,7 @@ type newsEntry = {
 const NewsCard = () => {
   const [newsLoading, setNewsLoading] = useState(true);
   const [newsData, setNewsData] = useState<newsEntry[] | []>([]);
+  const [newsError, setNewsError] = useState(false);
 
   const fetchNewsData = async () => {
     const data = await fetch("/api/resource/news", {
@@ -25,6 +26,7 @@ const NewsCard = () => {
     const response = await data.json();
     setNewsData(response.results);
     setNewsLoading(false);
+    setNewsError(response.error);
   }
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const NewsCard = () => {
           <span className="text-lg text-secondary">Fetching News Data</span>
       }
       {
-        (newsData.length != 0 && !newsLoading) ? (
+        (newsData.length != 0 && !newsLoading && !newsError) && (
           <div className="flex flex-col items-center justify-center">
             <span className="mb-2 text-lg text-secondary text-center">
               { newsData[0].title }
@@ -47,10 +49,13 @@ const NewsCard = () => {
               { newsData[0].description }
             </span>
           </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center">
-            <span className="text-tertiary">Sorry An Error Occurred When Trying To Fetch The News</span>
-          </div>
+        )
+      }
+      {
+        (newsError && !newsLoading) && (
+        <div className="flex flex-col items-center justify-center">
+          <span className="text-tertiary">Sorry An Error Occurred When Trying To Fetch The News</span>
+        </div>
         )
       }
     </DashboardCard>

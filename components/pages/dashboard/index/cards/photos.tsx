@@ -33,23 +33,25 @@ const PhotosCard = ({ user }: {user: User }) => {
 
   return (
     <DashboardCard title="Photos" href="/dashboard/photos">
-      {
-        photosLoading &&
-          <div className="text-center w-full">
-            <span className="text-lg text-secondary">Fetching Photos... Please Wait</span>
-          </div>
-      }
-      <div className="flex w-full flex-wrap">
+      <div className="flex flex-col items-center">
         {
-          (!photosLoading) && (
-            currentUserPhotos.length != 0 ? (
-              currentUserPhotos.map(photo =>
-                <PhotoCard url={photo.url} key={photo.id} />)
-            )
-            :
-            <span className="text-tertiary">No Photos Have Been Added</span>
-          )
+          photosLoading &&
+            <div className="text-center w-full">
+              <span className="text-lg text-secondary">Fetching Photos... Please Wait</span>
+            </div>
         }
+        <div className="flex w-full flex-wrap">
+          {
+            (!photosLoading) && (
+              currentUserPhotos.length != 0 ? (
+                currentUserPhotos.map(photo =>
+                  <PhotoCard url={photo.url} key={photo.id} />)
+              )
+              :
+              <span className="text-tertiary">No Photos Have Been Added</span>
+            )
+          }
+        </div>
       </div>
     </DashboardCard>
   )
