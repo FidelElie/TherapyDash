@@ -75,7 +75,7 @@ export default function LoginScreen() {
           formErrors["auth/user-not-found"] && (
             <div className="w-full text-center px-5">
               <span className="text-tertiary mr-3">
-                Sorry, We Couldn't Find Your Account, Join Below
+                Sorry, We Could Not Find Your Account, Join Below
               </span>
               <span className="text-secondary cursor-pointer" onClick={resetFormErrors}>
                 Clear
