@@ -16,17 +16,21 @@ const NewsCard = () => {
   const [newsError, setNewsError] = useState(false);
 
   const fetchNewsData = async () => {
-    const data = await fetch("/api/resource/news", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      }
-    });
+    try {
+      const data = await fetch("http://feeds.bbci.co.uk/news/rss.xml", {
+        method: "GET",
+        headers: {
+          "Content-Type": "text/xml",
+        }
+      });
 
-    const response = await data.json();
-    setNewsData(response.results);
+      const response = await data.json();
+      setNewsData(response.results);
+      setNewsError(false);
+    } catch (error) {
+      setNewsError(true);
+    }
     setNewsLoading(false);
-    setNewsError(response.error);
   }
 
   useEffect(() => {
@@ -54,7 +58,7 @@ const NewsCard = () => {
       {
         (newsError && !newsLoading) && (
         <div className="flex flex-col items-center justify-center">
-          <span className="text-tertiary">Sorry An Error Occurred When Trying To Fetch The News</span>
+          <span className="text-tertiary text-center">Sorry An Error Occurred When Trying To Fetch The News</span>
         </div>
         )
       }
