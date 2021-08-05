@@ -14,35 +14,30 @@ const WeatherCard = () => {
   const [geolocationActive, setGeoLocationActive] = useState(true);
   const [weatherData, setWeatherData] = useState<any>(null);
 
-  const getGeoLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => fetchWeatherData(position.coords));
-    } else {
-      setGeoLocationActive(false);
-    }
-  }
-
   const fetchWeatherData = async (
     { latitude, longitude }: { latitude: number, longitude: number }) => {
 
     const data = await fetch("/api/resource/weather", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        latitude,
-        longitude
-      })
+      body: JSON.stringify({ latitude, longitude })
     });
 
+
     const response = await data.json();
+    console.log(response)
     setWeatherData(response)
   }
 
   useEffect(() => {
-    getGeoLocation();
-  }, []);
+    const getGeoLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => fetchWeatherData(position.coords));
+      } else {
+        setGeoLocationActive(false);
+      }
+    }
 
-  useEffect(() => {
     if (geolocationActive) getGeoLocation()
   }, [geolocationActive]);
 
@@ -72,11 +67,18 @@ const WeatherCard = () => {
               </span>
               <img
                 className="w-12 h-auto"
-                src={conditionMap[("rain").toLowerCase()]}
+                src={conditionMap[(weatherData.weather[0].main).toLowerCase()]}
+                alt={weatherData.weather[0].main}
               />
             </>
           )
         }
+        <span className="text-sm text-tertiary text-center mt-3">
+          Any Problems With Geolocation Re-enable by clicking
+          <span className="ml-1 text-secondary cursor-pointer" onClick={() => setGeoLocationActive(true)}>
+            here
+          </span>.
+        </span>
       </div>
     </DashboardCard>
   )

@@ -4,9 +4,9 @@ const DashboardCard = (props: any) => {
   const { title, href, hrefMessage, children } = props;
 
   return (
-    <div className="w-1/3 h-80 box-border p-5">
+    <div className="w-1/3 h-80 box-border px-5 py-2">
       <div className="card w-full h-full items-center justify-center overflow-hidden flex flex-col">
-        <div className="bg-primary text-tertiary p-5 w-full text-center flex justify-between items-center h-20">
+        <div className="bg-primary text-tertiary p-5 w-full text-center flex justify-between items-center h-1/4 flex-shrink-0">
           <span className="text-2xl tracking-tighter font-semibold">{ title }</span>
           { href && (
             <Link href={href}>
@@ -16,7 +16,7 @@ const DashboardCard = (props: any) => {
             </Link>
           ) }
         </div>
-        <div className="p-5 box-border w-full flex-grow items-center justify-center flex">
+        <div className="px-5 py-2 box-border w-full h-3/4 items-center justify-center flex">
           {children}
         </div>
       </div>

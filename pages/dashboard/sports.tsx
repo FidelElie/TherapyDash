@@ -16,33 +16,35 @@ export default function SportsDashboard() {
   const [beatenTeams, setBeatenTeams] = useState<string[] | null>(null);
   const [teamInput, setTeamInput] = useState("");
 
-  const determineBeatenTeams = () => {
-    const team = selectedTeam.toLowerCase();
+  useEffect(() => {
+    const determineBeatenTeams = () => {
+      const team = selectedTeam.toLowerCase();
 
-    if (
-      Array.from(new Set(sportsJSONData.map(game => game.HomeTeam))).includes(selectedTeam)) {
-      setBeatenTeams(null);
-      return;
+      if (
+        Array.from(new Set(sportsJSONData.map(game => game.HomeTeam))).includes(selectedTeam)) {
+        setBeatenTeams(null);
+        return;
+      }
+
+      const juventusGames = sportsJSONData.filter(
+        data => (
+          (data.HomeTeam).toLowerCase() == team || (data.AwayTeam).toLowerCase() == team)
+      );
+
+      const teamsBeaten = juventusGames.filter(game => {
+        const teamIsHome = selectedTeam == game.HomeTeam;
+
+        return teamIsHome ? game.FTHG > game.FTAG : game.FTAG > game.FTHG;
+      })
+      .map(game => game.HomeTeam == selectedTeam ? game.AwayTeam : game.HomeTeam);
+
+      const teamsBeatenUnique  = Array.from(new Set(teamsBeaten));
+      setBeatenTeams(teamsBeatenUnique);
+
     }
 
-    const juventusGames = sportsJSONData.filter(
-      data => (
-        (data.HomeTeam).toLowerCase() == team || (data.AwayTeam).toLowerCase() == team)
-    );
-
-    const teamsBeaten = juventusGames.filter(game => {
-      const teamIsHome = selectedTeam == game.HomeTeam;
-
-      return teamIsHome ? game.FTHG > game.FTAG : game.FTAG > game.FTHG;
-    })
-    .map(game => game.HomeTeam == selectedTeam ? game.AwayTeam : game.HomeTeam);
-
-    const teamsBeatenUnique  = Array.from(new Set(teamsBeaten));
-    setBeatenTeams(teamsBeatenUnique);
-
-  }
-
-  useEffect(() => { determineBeatenTeams(); }, [selectedTeam])
+    determineBeatenTeams();
+   }, [selectedTeam])
 
   return (
     <AppLayout user>

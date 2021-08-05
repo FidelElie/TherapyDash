@@ -12,7 +12,11 @@ type teamEntry = {
 }
 
 const SportsCard = () => {
-  const selectedTeam = "Juventus"
+  const selectedTeam = (() => {
+    const uniqueTeams = Array.from(new Set(sportsJSONData.map(data => data.HomeTeam)));
+    const randomIndex = Math.floor(Math.random() * uniqueTeams.length);
+    return uniqueTeams[randomIndex]
+  })();
   const [teamData, setTeamData] = useState<teamEntry | null>(null);
 
   useEffect(() => {
@@ -32,7 +36,7 @@ const SportsCard = () => {
   }, []);
 
   return (
-    <DashboardCard title="Sports" href="/dashboard/sports">
+    <DashboardCard title="Sports" href="/dashboard/sports" hrefMessage="To Teams">
       <div className="flex flex-col items-center justify-center">
         <span className="text-lg mb-3">{ selectedTeam }</span>
         {

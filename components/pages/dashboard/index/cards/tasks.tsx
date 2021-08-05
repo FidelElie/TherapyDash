@@ -13,29 +13,29 @@ const TasksCard = ({ user }: { user: User }) => {
   const [tasksLoading, setTasksLoading] = useState(true)
   const [currentUserTasks, setCurrentUserTasks] = useState<Task[]>([]);
 
-  const retrieveRecentTasks = async () => {
-    const tasksRef = db().collection("tasks");
-    const userTasks = tasksRef.where("user", "==", user.id).limit(2);
-
-    const tasksResponse = await userTasks.get();
-
-    let tasksData: Task[] = [];
-    if (!(tasksResponse.empty)) {
-      tasksResponse.forEach(photo => tasksData.push(photo.data() as Task))
-    }
-
-    setCurrentUserTasks(tasksData);
-    setTasksLoading(false);
-  }
 
 
   useEffect(() => {
+    const retrieveRecentTasks = async () => {
+      const tasksRef = db().collection("tasks");
+      const userTasks = tasksRef.where("user", "==", user.id).limit(2);
+
+      const tasksResponse = await userTasks.get();
+
+      let tasksData: Task[] = [];
+      if (!(tasksResponse.empty)) {
+        tasksResponse.forEach(photo => tasksData.push(photo.data() as Task))
+      }
+
+      setCurrentUserTasks(tasksData);
+      setTasksLoading(false);
+    }
     if (tasksLoading) retrieveRecentTasks();
-  }, [tasksLoading])
+  }, [tasksLoading, user.id])
 
 
   return (
-    <DashboardCard title="Tasks" href="/dashboard/tasks">
+    <DashboardCard title="Tasks" href="/dashboard/tasks" hrefMessage="All Tasks">
       <div className="flex flex-col items-center">
         {
           tasksLoading &&

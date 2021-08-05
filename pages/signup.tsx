@@ -1,7 +1,7 @@
 // ! Next and React
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { ChangeEvent, useEffect, useState, useCallback } from "react";
 
 // ! Library
 import getServerAuth from "../lib/auth/server";
@@ -28,7 +28,10 @@ const initialFormValidations = {
 
 const initialFormErrors = {
   "auth/email-already-exists": false,
+  "file/invalid-format": false
 }
+
+const supportedFileTypes = ["png", "jpeg", "jpg"];
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -43,11 +46,14 @@ export default function SignUpScreen() {
   const modifyData = (key: string, value: string) => setFormData({
     ...formData, ...{ [key]: value }
   });
-  const toggleValidations = (validations: { [key: string]: boolean }) =>
-    setFormValidations({ ...formValidations, ... validations });
 
-  const enableFormError = (key: string) => setFormErrors({
-    ...formErrors, ... { [key]: true }
+  const toggleValidations = useCallback((
+    validations: { [key: string]: boolean }) =>
+      setFormValidations({ ...formValidations, ... validations }), [formValidations]
+    );
+
+  const toggleFormError = (key: string, bool: boolean = true) => setFormErrors({
+    ...formErrors, ... { [key]: bool }
   });
   const resetFormErrors = () => setFormErrors(initialFormErrors);
 
@@ -60,32 +66,27 @@ export default function SignUpScreen() {
       router.push("/dashboard");
     } else {
       if (signUpResponse.error.code in initialFormErrors) {
-        enableFormError(signUpResponse.error.code);
+        toggleFormError(signUpResponse.error.code);
       }
     }
     closeLoader();
   }
 
-  const checkUsernameExists = async () => {
-    const usersRef = db().collection("users");
-    const userQuery = usersRef.where("username", "==", formData.username);
-    const queryResponse = await userQuery.get();
-
-    toggleValidations({ usernameExists: !(queryResponse.empty) });
-    setUsernameCheckLoading(false);
-  }
-
   useEffect(() => {
-    if (fileData) {
-      URL.revokeObjectURL(formData.picture);
-      modifyData("picture", URL.createObjectURL(fileData));
-    } else {
-      modifyData("picture", "");
+    const checkUsernameExists = async () => {
+      const usersRef = db().collection("users");
+      const userQuery = usersRef.where("username", "==", formData.username);
+      const queryResponse = await userQuery.get();
+
+      toggleValidations({ usernameExists: !(queryResponse.empty) });
+      setUsernameCheckLoading(false);
     }
-  }, [fileData]);
+
+    if (usernameCheckLoading) checkUsernameExists();
+  }, [usernameCheckLoading, formData.username, toggleValidations]);
 
   useEffect(() => {
-    let validations: {[key: string]: boolean } = {}
+    let validations: { [key: string]: boolean } = {}
     if (formData.password != "") {
       validations.passwordTooShort = formData.password.length < 6;
     } else {
@@ -99,11 +100,28 @@ export default function SignUpScreen() {
     }
 
     toggleValidations(validations);
-  }, [formData.password, formData.repeatPassword]);
+  }, [formData.password, formData.repeatPassword, toggleValidations]);
 
-  useEffect(() => {
-    if (usernameCheckLoading) checkUsernameExists();
-  }, [usernameCheckLoading])
+  const chooseFile = (files: FileList | null) => {
+    if (files) {
+      if (files.length != 0) {
+        const singularFile = files[0];
+        const splitPath = singularFile.name.split(".");
+        const extension = splitPath[splitPath.length - 1];
+
+        if (supportedFileTypes.includes(extension)) {
+          toggleFormError("file/invalid-format", false);
+          setFileData(singularFile);
+          URL.revokeObjectURL(formData.picture);
+          modifyData("picture", URL.createObjectURL(singularFile));
+        } else {
+          toggleFormError("file/invalid-format");
+          modifyData("picture", "");
+        }
+
+      }
+    }
+  }
 
   return (
     <AppLayout center>
@@ -113,14 +131,13 @@ export default function SignUpScreen() {
         </div>
         {
           formErrors["auth/email-already-exists"] && (
-            <div className="w-full text-center px-5">
-              <span className="text-tertiary mr-3">
+            <div className="w-full text-center px-5 text-xs">
+              <span className="text-tertiary mr-1">
                 Sorry, Seems Like You Already Have An Account, Login Below
               </span>
               <span className="text-secondary cursor-pointer" onClick={resetFormErrors}>
                 Clear
               </span>
-
             </div>
           )
         }
@@ -133,13 +150,13 @@ export default function SignUpScreen() {
         >
           <div className="flex flex-col space-y-2 items-center w-full mb-5">
             <h2 className="text-tertiary">User Information</h2>
-            <div className="flex items-center">
-              <div className="rounded-full w-16 h-16 flex flex-col items-center  overflow-hidden object-cover justify-center bg-secondary mr-2 relative">
+            <div className="flex flex-col items-center">
+              <div className="rounded-full w-24 h-24 flex flex-col items-center  overflow-hidden object-cover justify-center bg-secondary mr-2 relative mb-2">
                 {
                   formData.picture ? (
-                    <img className="absolute w-full h-full rounded-full" src={formData.picture}/>
+                    <img className="absolute w-full h-full rounded-full" src={formData.picture} alt="SignUp"/>
                   ) : (
-                    <span className="text-white">Image</span>
+                    <span className="text-white">Profile<br/> Image</span>
                   )
                 }
               </div>
@@ -150,14 +167,27 @@ export default function SignUpScreen() {
                   name="picture"
                   type="file"
                   className="sr-only"
+                  accept={supportedFileTypes.map(type => `image/${type}`).join(", ")}
                   onChange={(event: ChangeEvent) => {
                     const files = (event.target as HTMLInputElement).files;
-                    if (files) setFileData(files[0]);
+                    chooseFile(files);
                   }}
                   required
                 />
               </label>
             </div>
+            {
+              formErrors["file/invalid-format"] && (
+                <div className="w-full text-center px-5 text-xs mb-4">
+                  <span className="text-tertiary mr-1">
+                    We only support uploading JPEGs and PNGs, please upload again.
+                  </span>
+                  <span className="text-secondary cursor-pointer" onClick={resetFormErrors}>
+                    Clear
+                  </span>
+                </div>
+              )
+            }
             <label htmlFor="email" className="sr-only">Username</label>
             <input
               id="username"

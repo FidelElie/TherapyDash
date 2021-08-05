@@ -23,20 +23,6 @@ export default function TasksDashboard({ user }: { user: User }) {
 
   const [taskText, setTaskText] = useState("");
 
-  const retrieveUserTasks = async () => {
-    const tasksRef = db().collection("tasks");
-    const userPhotos = tasksRef.where("user", "==", user.id);
-
-    const photosResponse = await userPhotos.get();
-
-    let photosData: Task[] = [];
-    if (!(photosResponse.empty)) {
-      photosResponse.forEach(photo => photosData.push(photo.data() as Task))
-    }
-
-    setCurrentUserTasks(photosData);
-    setTasksLoading(false);
-  }
 
   const addTask = async () => {
     const id = newId();
@@ -52,8 +38,22 @@ export default function TasksDashboard({ user }: { user: User }) {
   }
 
   useEffect(() => {
-    if (tasksLoading) retrieveUserTasks();
-  }, [tasksLoading]);
+    const retrieveUserTasks = async () => {
+      const tasksRef = db().collection("tasks");
+      const userPhotos = tasksRef.where("user", "==", user.id);
+
+      const photosResponse = await userPhotos.get();
+
+      let photosData: Task[] = [];
+      if (!(photosResponse.empty)) {
+        photosResponse.forEach(photo => photosData.push(photo.data() as Task))
+      }
+
+      setCurrentUserTasks(photosData);
+      setTasksLoading(false);
+    }
+    retrieveUserTasks();
+  }, [tasksLoading, user.id]);
 
   return (
     <AppLayout user>
@@ -128,14 +128,14 @@ const TaskComponent = ({ task, index, setTasksLoading }: taskComponentProps) => 
   return (
     <div className="w-full p-2">
       <div className="flex rounded-md bg-white shadow w-full px-3 py-2 items-center">
-        <div className="mr-3 h-8 w-8 bg-secondary rounded-full flex items-center justify-center">
-          <span className="text-white font-semibold">{ index }</span>
+        <div className="mr-3 h-6 w-6 bg-secondary rounded-full flex items-center justify-center">
+          <span className="text-white text-xs font-semibold">{ index }</span>
         </div>
         <div className="flex-grow">
-          <span className="text-tertiary">{ task.message }</span>
+          <span className="text-tertiary text-xs whitespace-nowrap">{ task.message }</span>
         </div>
-        <input className="ml-5 p-2 mr-5 h-6 w-6 rounded-full bg-tertiary" type="checkbox" checked={task.completed} onChange={toggleTask}/>
-        <button className="button alternate" onClick={deleteTask}>Delete</button>
+        <input className="mx-4 p-2 h-4 w-4 rounded-full bg-tertiary" type="checkbox" checked={task.completed} onChange={toggleTask}/>
+        <button className="button alternate text-xs" onClick={deleteTask}>Delete</button>
       </div>
     </div>
   )

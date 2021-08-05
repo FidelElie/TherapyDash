@@ -34,7 +34,7 @@ const NewsCard = () => {
   }, []);
 
   return (
-    <DashboardCard title="News" hrefMessage="All Tasks">
+    <DashboardCard title="News" hrefMessage="More">
       {
         newsLoading &&
           <span className="text-lg text-secondary">Fetching News Data</span>

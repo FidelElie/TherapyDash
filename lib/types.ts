@@ -9,7 +9,8 @@ interface User {
 interface Photo {
   id: string,
   user: string,
-  url: string
+  url: string,
+  ref: string
 }
 
 interface Task {

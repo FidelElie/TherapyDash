@@ -1,8 +1,9 @@
 // ! Next and React
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 // ! Components
 import DashboardCard from "../container";
+import { Pie } from "react-chartjs-2";
 
 const clothesTypes = [
   { name: "Sweater", color: "#1A9B3B" },
@@ -19,9 +20,18 @@ type clothesPropsType = {
   color: string
 }
 
+type chartPropsType = {
+  labels: string[],
+  datasets: {
+    data: number[],
+    backgroundColor: string[],
+    hoverOffset: number
+  }[]
+}
+
 const ClothesCard = () => {
   const [loadingData, setLoadingData] = useState(true);
-  const [clothesData, setClothesData] = useState<any>(null);
+  const [clothesData, setChartData] = useState<chartPropsType | null>(null);
 
   const fetchClothesData = async () => {
     const data = await fetch("/api/resource/clothes", {
@@ -39,44 +49,45 @@ const ClothesCard = () => {
       })
     );
 
-    setClothesData(dataEntries);
+    const chartEntry = {
+      labels: dataEntries.map((data: clothesPropsType) => data.title),
+      datasets: [{
+        data: dataEntries.map((data: clothesPropsType) => data.value),
+        backgroundColor: dataEntries.map((data: clothesPropsType) => data.color),
+        hoverOffset: 4
+      }]
+    }
+
+    setChartData(chartEntry);
     setLoadingData(false);
   }
 
-  useEffect(() => {
-    fetchClothesData();
-  }, []);
+  useEffect(() => { fetchClothesData(); }, []);
 
-  useEffect(() => {
-    if (loadingData) fetchClothesData();
-  }, [loadingData])
+  useEffect(() => { if (loadingData) fetchClothesData(); }, [loadingData])
 
   return (
     <DashboardCard title="Clothes">
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center justify-center w-full h-full">
         {
           loadingData &&
             <span className="text-lg text-secondary">Fetching Clothes Data</span>
         }
         {
-          clothesData && (
-            <>
-              <span className="text-secondary text-lg mb-4">
-                Out Of A Total Of {
-                  clothesData.map((data: clothesPropsType) => data.value).reduce((a: number, b: number) => a + b)
+          clothesData &&
+            <Pie
+              data={clothesData as any}
+              style={{ width: "80%", height: "100%"}}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: "right",
+                  }
                 }
-              </span>
-              <div className="flex flex-wrap justify-center">
-                {
-                  clothesData.map((data: clothesPropsType) => (
-                    <div className="pb-1 px-2" key={data.title}>
-                      <span className="text-tertiary">{ data.title }s : { data.value }</span>
-                    </div>
-                  ))
-                }
-              </div>
-            </>
-          )
+              }}
+            />
         }
       </div>
     </DashboardCard>

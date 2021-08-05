@@ -12,27 +12,26 @@ const PhotosCard = ({ user }: {user: User }) => {
   const [photosLoading, setPhotosLoading] = useState(true)
   const [currentUserPhotos, setCurrentUserPhotos] = useState<Photo[]>([]);
 
-  const retrieveUserPhotos = async () => {
-    const photosRef = db().collection("photos");
-    const userPhotos = photosRef.where("user", "==", user.id).limit(3);
-
-    const photosResponse = await userPhotos.get();
-
-    let photosData: Photo[] = [];
-    if (!(photosResponse.empty)) {
-      photosResponse.forEach(photo => photosData.push(photo.data() as Photo))
-    }
-
-    setCurrentUserPhotos(photosData);
-    setPhotosLoading(false);
-  }
-
   useEffect(() => {
+    const retrieveUserPhotos = async () => {
+      const photosRef = db().collection("photos");
+      const userPhotos = photosRef.where("user", "==", user.id).limit(3);
+
+      const photosResponse = await userPhotos.get();
+
+      let photosData: Photo[] = [];
+      if (!(photosResponse.empty)) {
+        photosResponse.forEach(photo => photosData.push(photo.data() as Photo))
+      }
+
+      setCurrentUserPhotos(photosData);
+      setPhotosLoading(false);
+    }
     if (photosLoading) retrieveUserPhotos();
-  }, [photosLoading])
+  }, [photosLoading, user.id])
 
   return (
-    <DashboardCard title="Photos" href="/dashboard/photos">
+    <DashboardCard title="Photos" href="/dashboard/photos" hrefMessage="To Gallery">
       <div className="flex flex-col items-center">
         {
           photosLoading &&
@@ -45,7 +44,7 @@ const PhotosCard = ({ user }: {user: User }) => {
             (!photosLoading) && (
               currentUserPhotos.length != 0 ? (
                 currentUserPhotos.map(photo =>
-                  <PhotoCard url={photo.url} key={photo.id} />)
+                  <PhotoCard photo={photo} url={photo.url} key={photo.id} />)
               )
               :
               <span className="text-tertiary">No Photos Have Been Added</span>
@@ -57,9 +56,9 @@ const PhotosCard = ({ user }: {user: User }) => {
   )
 }
 
-const PhotoCard = ({ url }: { url: string }) => (
+const PhotoCard = ({ photo, url }: { photo: Photo, url: string }) => (
   <div className="p-2 h-24 w-1/3">
-    <img src={url} className="w-full h-full shadow-lg rounded-md" />
+    <img src={url} className="w-full h-full shadow-lg rounded-md" alt={`gallery-${photo.id}`} />
   </div>
 )
 
