@@ -85,22 +85,23 @@ export default function SignUpScreen() {
     if (usernameCheckLoading) checkUsernameExists();
   }, [usernameCheckLoading, formData.username, toggleValidations]);
 
-  useEffect(() => {
-    let validations: { [key: string]: boolean } = {}
-    if (formData.password != "") {
-      validations.passwordTooShort = formData.password.length < 6;
-    } else {
-      validations.passwordTooShort = false;
-    }
 
-    if (formData.password != "" && formData.repeatPassword != "") {
-      validations.passwordsNoMatch = !(formData.password == formData.repeatPassword)
-    } else {
-      validations.passwordsNoMatch = false;
-    }
+  // useEffect(() => {
+  //   let validations: { [key: string]: boolean } = {}
+  //   if (formData.password != "") {
+  //     validations.passwordTooShort = formData.password.length < 6;
+  //   } else {
+  //     validations.passwordTooShort = false;
+  //   }
 
-    toggleValidations(validations);
-  }, [formData.password, formData.repeatPassword, toggleValidations]);
+  //   if (formData.password != "" && formData.repeatPassword != "") {
+  //     validations.passwordsNoMatch = !(formData.password == formData.repeatPassword)
+  //   } else {
+  //     validations.passwordsNoMatch = false;
+  //   }
+
+  //   toggleValidations(validations);
+  // }, [formData.password, formData.repeatPassword, toggleValidations]);
 
   const chooseFile = (files: FileList | null) => {
     if (files) {
