@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-export default async (_: NextApiRequest, res: NextApiResponse) => {
+const getClothesData = async (_: NextApiRequest, res: NextApiResponse) => {
     const clothesURL = process.env.CLOTHES_API_URL || ""
 
     const clothesData = await fetch(clothesURL);
@@ -8,3 +8,5 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
 
     res.status(200).json(clothesResponse);
 }
+
+export default getClothesData;

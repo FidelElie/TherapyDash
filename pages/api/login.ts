@@ -3,7 +3,7 @@ import { admin } from "../../config/firebase.server";
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const Login = async (req: NextApiRequest, res: NextApiResponse) => {
     const userToken = req.body.userToken;
     const expiresIn = 60 * 60 * 24 * 5 * 1000;
 
@@ -23,3 +23,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             }
         )
 }
+
+export default Login;

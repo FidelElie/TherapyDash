@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { JSDOM } from "jsdom";
 import { chromium } from 'playwright';
 
-export default async (_: NextApiRequest, res: NextApiResponse) => {
+const getNewsData = async (_: NextApiRequest, res: NextApiResponse) => {
   const url = "http://feeds.bbci.co.uk/news/rss.xml"
   const browser = await chromium.launch({ headless: true });
 
@@ -33,3 +33,5 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
     await browser.close();
   }
 }
+
+export default getNewsData;

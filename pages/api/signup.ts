@@ -3,7 +3,7 @@ import { admin } from "../../config/firebase.server";
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const SignUp = async (req: NextApiRequest, res: NextApiResponse) => {
     const authInformation = req.body.userInformation;
 
     try {
@@ -16,3 +16,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(500).json({ status: "error", error: error.errorInfo })
     }
 }
+
+export default SignUp;
